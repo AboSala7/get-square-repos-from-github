@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-      String auth = "41c089245cf74273a1f3a80c9b7295d4151187a5";
+      String auth = "enter your access token";
 
 
     @GET("orgs/Square/repos?access_token="+ApiInterface.auth+"&type=public&per_page=10")

@@ -19,6 +19,7 @@ import githubapi.tutorial.squarepublicrepos.model.Api.ApiClient;
 import githubapi.tutorial.squarepublicrepos.model.Api.ApiInterface;
 import githubapi.tutorial.squarepublicrepos.model.Api.Logic;
 import githubapi.tutorial.squarepublicrepos.model.Api.result.ApiResult;
+import githubapi.tutorial.squarepublicrepos.model.DataBase.ReposDbHelper;
 import githubapi.tutorial.squarepublicrepos.model.EndlessRecyclerViewScrollListener;
 import githubapi.tutorial.squarepublicrepos.model.RepoData;
 import retrofit2.Call;
@@ -31,16 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private EndlessRecyclerViewScrollListener scrollListener ;
     private Context context ;
     private AlertDialog alertDialog ;
-
     private List<RepoData> repoDataList = new ArrayList<>();
     private ArrayList fullData ;
     private RepoAdapter repoAdapter ;
+    private ReposDbHelper db ;
 
     ApiInterface apiService;
     Call<ApiResult[]> call ;
 
     boolean flag =false;
-
     Logic logic = new Logic(context);
 
 
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new ReposDbHelper(this);
 
         reposRecycler = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -98,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
             String ownerUrl = apiResult.getOwner().getHtmlUrl();
             String repoUrl = apiResult.getHtmlUrl();
             RepoData repoData =new RepoData(repoName,owner,description,fork,repoUrl,ownerUrl);
+            // update DataBase
+            db.insertRepo(repoData);
             repoDataList.add(repoData);
         }
         if (flag)
