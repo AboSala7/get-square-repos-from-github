@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView reposRecycler ;
+    private SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener ;
     private Context context ;
     private AlertDialog alertDialog ;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Call<ApiResult[]> call ;
 
     boolean flag =false;
+    boolean refreshFlag = false;
     Logic logic = new Logic(context);
 
 
@@ -52,6 +55,16 @@ public class MainActivity extends AppCompatActivity {
         db = new ReposDbHelper(this);
 
         reposRecycler = findViewById(R.id.recycler);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFlag =true ;
+                callApi(1);
+            }
+        });
+
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         reposRecycler.setLayoutManager(layoutManager);
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -72,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void callApi(int page){
+        if(refreshFlag){
+            repoAdapter.clear();
+            refreshFlag = false ;
+            swipeContainer.setRefreshing(false);
+            db.clearDataBase();
+        }
         call = apiService.getRepos(page);
         call.enqueue(new Callback<ApiResult[]>() {
             @Override

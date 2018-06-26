@@ -30,6 +30,15 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
         this.logic = logic ;
     }
 
+    public void clear() {
+        repoDataList.clear();
+        notifyDataSetChanged();
+    }
+    public void addAll(List<RepoData> list) {
+        repoDataList.addAll(list);
+        notifyDataSetChanged();
+    }
+
     @Override
     public RepoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
