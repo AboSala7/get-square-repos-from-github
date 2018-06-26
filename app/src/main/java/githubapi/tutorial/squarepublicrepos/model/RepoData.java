@@ -2,14 +2,38 @@ package githubapi.tutorial.squarepublicrepos.model;
 
 public class RepoData {
 
-    private String repoName ,owner ,description;
-    private boolean fork ;
+    private String repoName;
+    private String owner;
+    private String description;
+    private String repoUrl;
 
-    public RepoData(String repoName, String owner, String description, boolean fork) {
+    public String getOwnerUrl() {
+        return ownerUrl;
+    }
+
+    public RepoData(String repoName, String owner, String description, boolean fork , String repoUrl, String ownerUrl) {
         this.repoName = repoName;
         this.owner = owner;
         this.description = description;
+        this.repoUrl = repoUrl;
+        this.ownerUrl = ownerUrl;
         this.fork = fork;
+
+    }
+
+    private String ownerUrl;
+    private boolean fork ;
+
+    public void setRepoUrl(String repoUrl) {
+        this.repoUrl = repoUrl;
+    }
+
+    public void setOwnerUrl(String ownerUrl) {
+        this.ownerUrl = ownerUrl;
+    }
+
+    public String getRepoUrl() {
+        return repoUrl;
     }
 
     public String getRepoName() {

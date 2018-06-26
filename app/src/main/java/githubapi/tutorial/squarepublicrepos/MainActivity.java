@@ -1,5 +1,10 @@
 package githubapi.tutorial.squarepublicrepos;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +17,7 @@ import java.util.List;
 
 import githubapi.tutorial.squarepublicrepos.model.Api.ApiClient;
 import githubapi.tutorial.squarepublicrepos.model.Api.ApiInterface;
+import githubapi.tutorial.squarepublicrepos.model.Api.Logic;
 import githubapi.tutorial.squarepublicrepos.model.Api.result.ApiResult;
 import githubapi.tutorial.squarepublicrepos.model.EndlessRecyclerViewScrollListener;
 import githubapi.tutorial.squarepublicrepos.model.RepoData;
@@ -23,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView reposRecycler ;
     private EndlessRecyclerViewScrollListener scrollListener ;
+    private Context context ;
+    private AlertDialog alertDialog ;
 
     private List<RepoData> repoDataList = new ArrayList<>();
     private ArrayList fullData ;
@@ -32,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     Call<ApiResult[]> call ;
 
     boolean flag =false;
+
+    Logic logic = new Logic(context);
 
 
     @Override
@@ -57,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         callApi(1);
 
     }
+
 
     public void callApi(int page){
         call = apiService.getRepos(page);
@@ -84,14 +95,15 @@ public class MainActivity extends AppCompatActivity {
             String owner = apiResult.getOwner().getLogin();
             String description = apiResult.getDescription();
             boolean fork = apiResult.getFork();
-            RepoData repoData =new RepoData(repoName,owner,description,fork);
+            String ownerUrl = apiResult.getOwner().getHtmlUrl();
+            String repoUrl = apiResult.getHtmlUrl();
+            RepoData repoData =new RepoData(repoName,owner,description,fork,repoUrl,ownerUrl);
             repoDataList.add(repoData);
         }
-        if(flag){
+        if (flag)
             repoAdapter.notifyDataSetChanged();
-        }
         else
-        repoAdapter = new RepoAdapter(getApplicationContext(),repoDataList);
+        repoAdapter = new RepoAdapter(getApplicationContext(),repoDataList,logic);
         reposRecycler.setAdapter(repoAdapter);}
 
 
